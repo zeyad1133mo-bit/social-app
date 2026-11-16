@@ -1,0 +1,72 @@
+import 'dotenv/config';
+import { z } from 'zod';
+import { config } from 'dotenv';
+  // schema >> validate data process.env
+// 1. errors >> missed fields
+// 2. transform data in precess.env
+config();
+const schema = z.object({
+  PORT: z.string().default('3000'),
+
+  MONGODB_URL: z.string(),
+
+  JWT_ACCESS_SECRET: z.string(),
+  JWT_REFRESH_SECRET: z.string(),
+
+  MAIL_USER: z.string().trim().toLowerCase(),
+  MAIL_PASSWORD: z.string(),
+  MAIL_HOST: z.string().default('smtp.gmail.com'),
+  MAIL_PORT: z.string().default('587'),
+  MAIL_FROM_NAME: z.string().default('Social App'),
+  MAIL_FROM_EMAIL: z.string().optional(),
+
+  GOOGLE_WEB_OAUTH_CLIENT_ID: z.string(),
+
+  REDIS_PORT: z.string().default('6379'),
+  REDIS_HOST: z.string(),
+  REDIS_PASSWORD: z.string(),
+
+  MAILJET_API_KEY: z.string(),
+  MAILJET_API_SECRET: z.string(),
+  MAILJET_FROM_EMAIL: z.string(),
+  MAILJET_FROM_NAME: z.string(),
+});
+
+const parsed = schema.parse(process.env);
+
+export const env = {
+    db: {
+  DB_URL: process.env.DB_URL as string
+    },
+  port: Number(parsed.PORT),
+  google: {
+    webClientId: parsed.GOOGLE_WEB_OAUTH_CLIENT_ID,
+    iosClientId: parsed.GOOGLE_WEB_OAUTH_CLIENT_ID,
+  },
+  redis: {
+    host: parsed.REDIS_HOST,
+    port: Number(parsed.REDIS_PORT),
+    password: parsed.REDIS_PASSWORD,
+  },
+  nodemailer: {
+    host: parsed.MAIL_HOST,
+    port: Number(parsed.MAIL_PORT),
+    user: parsed.MAIL_USER,
+    pass: parsed.MAIL_PASSWORD,
+    fromName: parsed.MAIL_FROM_NAME,
+    fromEmail: parsed.MAIL_FROM_EMAIL ?? parsed.MAIL_USER,
+  },
+  mailjet: {
+    apiKey: parsed.MAILJET_API_KEY,
+    apiSecret: parsed.MAILJET_API_SECRET,
+    fromEmail: parsed.MAILJET_FROM_EMAIL,
+    fromName: parsed.MAILJET_FROM_NAME,
+  },
+  jwt: {
+    accessSecret: parsed.JWT_ACCESS_SECRET,
+    refreshSecret: parsed.JWT_REFRESH_SECRET
+  },
+  payments: {},
+  aws: {},
+}
+
