@@ -10,7 +10,7 @@ export function withCache(ttl = 3600) {
         // request
         // method + url
         // "GET:/products" :"[{},{},{},...]"
-        let key = `${req.method}:${req.originalUrl}`;
+        let key = `${req.method}:${req.originalUrl}:${req.user?.sub ?? 'anon'}`;
 
         // /api >> /user >> /
         // req.url >> '/'

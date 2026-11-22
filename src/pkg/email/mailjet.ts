@@ -22,7 +22,7 @@ export class MailjetProvider {
 
     async sendMail(email: string, subject: string, html: string) {
 
-        this.client.post('send', {version: 'v3.1'}).request({
+        await this.client.post('send', {version: 'v3.1'}).request({
             Messages: [{
                 From: {
                     Email: this.fromEmail, Name: this.fromName,

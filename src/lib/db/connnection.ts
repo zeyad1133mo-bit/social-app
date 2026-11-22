@@ -1,4 +1,4 @@
 import mongoose from "mongoose";
 import { env } from "../config/env";
 
-mongoose.connect(env.db.DB_URL);
+mongoose.connect(env.db.MONGODB_URL);

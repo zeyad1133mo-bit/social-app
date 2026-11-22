@@ -14,7 +14,7 @@ export class UserService {
         if (!user) throw userNotExist;
 
         const isSelf = profileId === viewrId;
-        const isFollower =  (user.following?? []).some((id) => id.toString() === viewrId);
+        const isFollower =  (user.followers?? []).some((id) => id.toString() === viewrId);
         if(user.isPrivate && !isSelf && !isFollower){
             return {_id: user._id, userName: user.userName, isPrivate: true};
         }

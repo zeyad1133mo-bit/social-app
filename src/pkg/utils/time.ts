@@ -29,7 +29,7 @@ export function toSeconds(time: number, unit: TimeUnit) {
         case 'hours':
             return time * 60 * 60;
         case 'days':
-            return time * 60 * 60 * 1000 * 24;
+            return time * 60 * 60 * 24;
 
         default:
             return time;

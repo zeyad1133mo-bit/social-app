@@ -2,6 +2,6 @@
  import { JwtPayload } from "jsonwebtoken";
  export declare module 'express-serve-static-core' {
     interface Request {
-        user?: Partial<IUser> & JwtPayload;
+        user: Partial<IUser> & JwtPayload & { sub: string };
     }
 }

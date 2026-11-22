@@ -5,7 +5,7 @@ export function globalErrorHandler(err: AppError, req: Request, res: Response, n
 
     if (err.isOperational) {
         return res.status(err.statusCode).json({
-            success: true,
+            success: false,
             message: err.message,
         });
     }

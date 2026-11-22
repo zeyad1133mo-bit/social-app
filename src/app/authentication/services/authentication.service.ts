@@ -99,12 +99,9 @@ export class AuthService {
     const user = await this.userRepository.checkUserExistByEmail(email);// {} | null
     // 1.1 if you don't exist >> error "User not exist."
     if (!user) throw userNotExist;
-    console.log(`${this.twoStepVerificationKey}${email}`);
-
     // 2. check otp validation
     // const otp = await otpRepository.getOtpByEmail(email);// {code,email} | null
     const cacheCode = await cacheProvider.get(`${this.twoStepVerificationKey}${email}`);
-    console.log(cacheCode);
 
     // 2.1 not exist into DB >> error >> "otp expired" >> resend otp
     if (!cacheCode) throw otpExpired;

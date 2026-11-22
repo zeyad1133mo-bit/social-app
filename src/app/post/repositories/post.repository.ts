@@ -13,7 +13,25 @@ constructor() {
         return Post.find({ userId: userId });
     }
 
+    async findById(postId: string) {
+        return Post.findById(postId);
+    }
 
+    async getAllPosts() {
+        return Post.find().sort({ createdAt: -1 });
+    }
+
+    async deleteById(postId: string) {
+        return Post.findByIdAndDelete(postId);
+    }
+
+    async incrementCommentsCount(postId: string) {
+        return Post.findByIdAndUpdate(postId, { $inc: { commentsCount: 1 } });
+    }
+
+    async decrementCommentsCount(postId: string) {
+        return Post.findByIdAndUpdate(postId, { $inc: { commentsCount: -1 } });
+    }
 }
 
 export default new PostRepository();

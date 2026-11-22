@@ -1,7 +1,6 @@
 import { Readable } from "stream";
 import { ICloudProvider } from "./cloud.interface";
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import multer from "multer";
 
 interface S3Config {
     region: string;
@@ -52,7 +51,7 @@ export class S3CloudProvider implements ICloudProvider {
             Bucket: this.bucketName,
             Body: file.buffer,
             ContentType: file.mimetype,
-            Key: `${path}/${new Date().toISOString()}- ${file.originalname}`
+            Key: `${path}/${new Date().toISOString()}-${file.originalname}`
         })
         await this.client.send(command);
         return command.input.Key as string;

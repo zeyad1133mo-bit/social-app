@@ -18,14 +18,14 @@ export async function comparePassword(password: string, hashedPassword:string) {
 export function generateAccessToken(payload: TUserPayload) {
   return jwt.sign(
     payload, env.jwt.accessSecret,
-    { expiresIn: toMs(1, 'hours') }
+    { expiresIn: '1h' }
   );
 }
 
 export function generateRefreshToken(payload: TUserPayload) {
   return jwt.sign(
     payload, env.jwt.refreshSecret,
-    { expiresIn: toMs(7,'days') }
+    { expiresIn: '7d' }
   );
 }
 

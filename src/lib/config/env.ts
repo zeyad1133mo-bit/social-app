@@ -42,7 +42,7 @@ const parsed = schema.parse(process.env);
 
 export const env = {
   db: {
-    DB_URL: process.env.DB_URL as string
+    MONGODB_URL: parsed.MONGODB_URL
   },
   port: Number(parsed.PORT),
   google: {

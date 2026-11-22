@@ -11,7 +11,7 @@ export function authGuard(req: Request, res: Response, next: NextFunction) {
         if (!token) {
             throw new AppError('no token provided', 403);
         }
-        req.user = JWT.verify(token, env.jwt.accessSecret) as JwtPayload;
+        req.user = JWT.verify(token, env.jwt.accessSecret) as JwtPayload & { sub: string };
         // req.user = payload;
         next();
     } catch (error) {

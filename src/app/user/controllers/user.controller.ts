@@ -17,14 +17,15 @@ class UserController {
             next(error);
         }
     };
-    /*
-     getUserProfile = async (req, res, next) => {
+
+    getUserProfile = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const user = await this.userService.getProfile(req.params.id as string, req.user.sub);
-            res.json({ message: 'success', success: true, data: user });
-        } catch (error) { next(error); }
+            res.json({ success: true, data: user });
+        } catch (error) {
+            next(error);
+        }
     };
-     */
     updateProfile = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const user = await this.userService.updateProfile(req.user.sub, req.body);
