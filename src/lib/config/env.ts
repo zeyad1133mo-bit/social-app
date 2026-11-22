@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { z } from 'zod';
 import { config } from 'dotenv';
-  // schema >> validate data process.env
+// schema >> validate data process.env
 // 1. errors >> missed fields
 // 2. transform data in precess.env
 config();
@@ -30,14 +30,20 @@ const schema = z.object({
   MAILJET_API_SECRET: z.string(),
   MAILJET_FROM_EMAIL: z.string(),
   MAILJET_FROM_NAME: z.string(),
+
+ S3_REGION: z.string(),
+ S3_SECRET_KEY: z.string(),
+ S3_ACCESS_KEY: z.string(),
+ S3_BUCKET_NAME: z.string(),
+
 });
 
 const parsed = schema.parse(process.env);
 
 export const env = {
-    db: {
-  DB_URL: process.env.DB_URL as string
-    },
+  db: {
+    DB_URL: process.env.DB_URL as string
+  },
   port: Number(parsed.PORT),
   google: {
     webClientId: parsed.GOOGLE_WEB_OAUTH_CLIENT_ID,
@@ -62,11 +68,20 @@ export const env = {
     fromEmail: parsed.MAILJET_FROM_EMAIL,
     fromName: parsed.MAILJET_FROM_NAME,
   },
+
   jwt: {
     accessSecret: parsed.JWT_ACCESS_SECRET,
     refreshSecret: parsed.JWT_REFRESH_SECRET
   },
   payments: {},
-  aws: {},
+  aws: {
+
+    secretKey: parsed.S3_SECRET_KEY,
+    accessKey: parsed.S3_ACCESS_KEY,
+    bucketName: parsed.S3_BUCKET_NAME,
+    region: parsed.S3_REGION,
+
+
+  },
 }
 

@@ -12,4 +12,5 @@ export interface IUser {
     followers?: Types.ObjectId[];
     following?: Types.ObjectId[];
     isPrivate?: boolean;
+    profilePicturePath?: string;
 }

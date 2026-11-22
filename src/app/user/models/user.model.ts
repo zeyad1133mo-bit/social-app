@@ -49,6 +49,9 @@ const schema = new Schema<IUser>(
             type: Boolean,
             default: false,
         },
+        profilePicturePath: {
+            type: String,
+        },
         followers: [
             {
                 type: Types.ObjectId,

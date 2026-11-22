@@ -1,10 +1,11 @@
 import userRepository, { UserRepository } from "../repositories/user.repository";
 import { UpdateProfileDto } from "../dto/dto";
 import { userNotExist, cannotFollowYourself, alreadyFollowing, notFollowing } from "../error";
-
+import { ICloudProvider } from "../../../pkg/cloud/cloud.interface";
+import {s3CloudProvider } from "../../../lib/cloud/init"
 export class UserService {
     private readonly userRepository: UserRepository = userRepository;
-
+    private readonly cloudProvider: ICloudProvider = s3CloudProvider;
     // get profile
     getProfile = async (profileId: string,viewrId: string ) => {
         // 1. check user existence
@@ -119,6 +120,11 @@ export class UserService {
         // 2. search users by userName or email
         return this.userRepository.searchUsers(query.trim());
     };
+    uploadProfilePicture = async (file: Express.Multer.File, userId: string) => {
+        const Key = await this.cloudProvider.uploadfile(file, `users/${userId}`);
+        await this.userRepository.update({ _id: userId }, { profilePicturePath: Key }, {});
+    };
 }
+
 
 export default new UserService();

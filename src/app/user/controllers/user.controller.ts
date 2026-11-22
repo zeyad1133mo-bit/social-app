@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { AppError } from '../../../lib/error/app-error';
 import userService, { UserService } from '../services/user.service';
 
 class UserController {
@@ -92,6 +93,16 @@ class UserController {
             const query = (req.query.q as string) || (req.query.search as string) || '';
             const users = await this.userService.searchUsers(query);
             res.json({ success: true, data: users });
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    uploadProfilePicture = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            if (!req.file) throw new AppError('No file uploaded', 400);
+            await this.userService.uploadProfilePicture(req.file, req.user.sub);
+            res.json({ success: true, message: 'Profile picture uploaded' });
         } catch (error) {
             next(error);
         }
