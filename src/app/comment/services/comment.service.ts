@@ -24,10 +24,28 @@ export class CommentService {
         return commentRepository.findByPostId(postId);
     };
 
+    getCommentById = async (commentId: string) => {
+        const comment = await commentRepository.findById(commentId);
+        if (!comment) throw new AppError('Comment not found', 404);
+        return comment;
+    };
+
+    updateComment = async (commentId: string, userId: string, content: string) => {
+        if (!content?.trim()) throw new AppError('Comment content is required', 400);
+        const comment = await commentRepository.findById(commentId);
+        if (!comment) throw new AppError('Comment not found', 404);
+        if (comment.userId.toString() !== userId) throw new AppError('Not allowed to update this comment', 403);
+        return commentRepository.updateById(commentId, content.trim());
+    };
+
     deleteComment = async (commentId: string, userId: string) => {
         const comment = await commentRepository.findById(commentId);
         if (!comment) throw new AppError('Comment not found', 404);
-        if (comment.userId.toString() !== userId) throw new AppError('Not allowed to delete this comment', 403);
+
+        const post = await postRepository.findById(comment.postId.toString());
+        const isCommentOwner = comment.userId.toString() === userId;
+        const isPostOwner = post?.userId.toString() === userId;
+        if (!isCommentOwner && !isPostOwner) throw new AppError('Not allowed to delete this comment', 403);
 
         const deleted = await commentRepository.deleteById(commentId);
         await postRepository.decrementCommentsCount(comment.postId.toString());

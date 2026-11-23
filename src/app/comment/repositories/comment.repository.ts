@@ -14,6 +14,14 @@ class CommentRepository extends AbstractRepository<IComment> {
         return Comment.find({ postId }).sort({ createdAt: 1 });
     }
 
+    async updateById(commentId: string, content: string) {
+        return Comment.findByIdAndUpdate(
+            commentId,
+            { content },
+            { new: true, runValidators: true }
+        );
+    }
+
     async deleteById(commentId: string) {
         return Comment.findByIdAndDelete(commentId);
     }

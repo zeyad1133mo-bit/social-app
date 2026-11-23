@@ -13,7 +13,7 @@ class PostController {
 
     getPosts = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const posts = await postService.getPosts();
+            const posts = await postService.getPosts(req.user.sub);
             res.json({ success: true, data: posts });
         } catch (error) {
             next(error);
@@ -24,6 +24,34 @@ class PostController {
         try {
             const posts = await postService.getPostsByUser(req.params.id as string);
             res.json({ success: true, data: posts });
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getPostById = async (req: Request, res: Response, next: NextFunction) => {
+
+        try {
+            const post = await postService.getPostById(req.params.id as string);
+            res.json({
+                success: true,
+                data: post
+            })
+        } catch (error) {
+            next(error)
+        }
+
+
+    }
+
+    updatePost = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const post = await postService.updatePost(
+                req.params.id as string,
+                req.user.sub,
+                req.body.content
+            );
+            res.json({ success: true, data: post });
         } catch (error) {
             next(error);
         }

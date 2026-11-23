@@ -24,6 +24,28 @@ class CommentController {
         }
     };
 
+    getCommentById = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const comment = await commentService.getCommentById(req.params.id as string);
+            res.json({ success: true, data: comment });
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    updateComment = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const comment = await commentService.updateComment(
+                req.params.id as string,
+                req.user.sub,
+                req.body.content
+            );
+            res.json({ success: true, data: comment });
+        } catch (error) {
+            next(error);
+        }
+    };
+
     deleteComment = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const comment = await commentService.deleteComment(req.params.id as string, req.user.sub);
