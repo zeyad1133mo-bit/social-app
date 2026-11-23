@@ -6,6 +6,7 @@
     "skipLibCheck": true,
     "module": "nodenext",
     "target": "esnext"
+    
   },
   "include": [
     "src/**/*.ts",

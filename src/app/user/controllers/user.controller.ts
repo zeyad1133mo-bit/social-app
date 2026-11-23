@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { AppError } from '../../../lib/error/app-error';
 import userService, { UserService } from '../services/user.service';
+import { success } from 'zod';
 
 class UserController {
     private userService: UserService;
@@ -11,7 +12,7 @@ class UserController {
 
     getProfile = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const user = await this.userService.getProfile(req.user.sub,req.user.sub);
+            const user = await this.userService.getProfile(req.user.sub, req.user.sub);
             res.json({ success: true, data: user });
         } catch (error) {
             next(error);
@@ -101,13 +102,24 @@ class UserController {
 
     uploadProfilePicture = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            if (!req.file) throw new AppError('No file uploaded', 400);
-            await this.userService.uploadProfilePicture(req.file, req.user.sub);
+            await this.userService.uploadProfilePicture(req.file as Express.Multer.File, req.user?.id);
             res.json({ success: true, message: 'Profile picture uploaded' });
         } catch (error) {
             next(error);
         }
     };
+
+    deleteProfilePicture = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            await this.userService.deleteProfilePicture(req.user?.id);
+            res.json({
+                success: true,
+                message: 'Profile pic deleted'
+            })
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export default new UserController();

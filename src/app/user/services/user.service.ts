@@ -2,21 +2,23 @@ import userRepository, { UserRepository } from "../repositories/user.repository"
 import { UpdateProfileDto } from "../dto/dto";
 import { userNotExist, cannotFollowYourself, alreadyFollowing, notFollowing } from "../error";
 import { ICloudProvider } from "../../../pkg/cloud/cloud.interface";
-import {s3CloudProvider } from "../../../lib/cloud/init"
+import { s3CloudProvider } from "../../../lib/cloud/init"
+import * as fs from "node:fs";
+import { AppError } from "../../../lib/error/app-error";
 export class UserService {
     private readonly userRepository: UserRepository = userRepository;
     private readonly cloudProvider: ICloudProvider = s3CloudProvider;
     // get profile
-    getProfile = async (profileId: string,viewrId: string ) => {
+    getProfile = async (profileId: string, viewrId: string) => {
         // 1. check user existence
         const user = await this.userRepository.findById(profileId);
         // 1.1 if not exist >> throw error
         if (!user) throw userNotExist;
 
         const isSelf = profileId === viewrId;
-        const isFollower =  (user.followers?? []).some((id) => id.toString() === viewrId);
-        if(user.isPrivate && !isSelf && !isFollower){
-            return {_id: user._id, userName: user.userName, isPrivate: true};
+        const isFollower = (user.followers ?? []).some((id) => id.toString() === viewrId);
+        if (user.isPrivate && !isSelf && !isFollower) {
+            return { _id: user._id, userName: user.userName, isPrivate: true };
         }
         return user;
 
@@ -121,9 +123,20 @@ export class UserService {
         return this.userRepository.searchUsers(query.trim());
     };
     uploadProfilePicture = async (file: Express.Multer.File, userId: string) => {
+        file.buffer = fs.readFileSync(file.path);
         const Key = await this.cloudProvider.uploadfile(file, `users/${userId}`);
         await this.userRepository.update({ _id: userId }, { profilePicturePath: Key }, {});
     };
+    deleteProfilePicture = async (userId: string) => {
+        const user = await userRepository.getOne({ _id: userId });
+        if (!user?.profilePicturePath) {
+            throw new AppError(' Profile pic not found ', 404)
+        }
+        await this.cloudProvider.deleteFile(user?.profilePicturePath as string);
+        await this.userRepository.update({ _id: userId }, { $unset: { profilePicturePath:''} }, {})
+    }
+
+
 }
 
 
