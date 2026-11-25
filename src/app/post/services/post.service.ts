@@ -18,9 +18,9 @@ export class PostService {
 
     getPostsByUser = async (userId: string) => postRepository.findByUserId(userId);
 
-    getPostById = async (postId: string) =>{
+    getPostById = async (postId: string) => {
         const post = await postRepository.findById(postId);
-        if(!post) throw new AppError('Post not found', 404);
+        if (!post) throw new AppError('Post not found', 404);
         return post;
 
     }
@@ -32,9 +32,6 @@ export class PostService {
         if (post.userId.toString() !== userId) throw new AppError('Not allowed to update this post', 403);
         return postRepository.updateById(postId, content.trim());
     };
-
-
-
 
     deletePost = async (postId: string, userId: string) => {
         const post = await postRepository.findById(postId);

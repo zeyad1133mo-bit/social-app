@@ -16,7 +16,8 @@ userRouter.get('/:id/followers', authGuard, userController.getFollowers);
 userRouter.get('/:id/following', authGuard, userController.getFollowing);
 
 userRouter.post('/me/profile-picture', authGuard, multerUploadSingle('file'), userController.uploadProfilePicture);
-userRouter.delete('/delete-profile-picture',userController.deleteProfilePicture);
+userRouter.post('/profile-picture/presigned-url', authGuard, userController.generatePresingerUrl);
+userRouter.delete('/delete-profile-picture', authGuard, userController.deleteProfilePicture);
 
 userRouter.get('/:id', authGuard, userController.getUserProfile);
 

@@ -16,13 +16,13 @@ class PostRepository extends AbstractRepository<IPost> {
     async findById(postId: string) {
         return Post.findById(postId);
     }
+
     async updateById(postId: string, content: string) {
         return Post.findByIdAndUpdate(postId, {
             content
         }, { new: true, runValidators: true })
     }
-
-
+    
     async getAllPosts() {
         return Post.find().sort({ createdAt: -1 });
     }

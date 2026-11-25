@@ -127,6 +127,9 @@ export class UserService {
         const Key = await this.cloudProvider.uploadfile(file, `users/${userId}`);
         await this.userRepository.update({ _id: userId }, { profilePicturePath: Key }, {});
     };
+     generatePresingerUrl = async (file: Partial<Express.Multer.File>, userId: string) =>{
+        return await this.cloudProvider.uploadfile(file, `users/${userId}`);
+     }
     deleteProfilePicture = async (userId: string) => {
         const user = await userRepository.getOne({ _id: userId });
         if (!user?.profilePicturePath) {

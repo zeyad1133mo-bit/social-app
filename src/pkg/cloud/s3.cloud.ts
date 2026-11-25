@@ -1,6 +1,8 @@
 import { Readable } from "stream";
 import { ICloudProvider } from "./cloud.interface";
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {getSignedUrl} from "@aws-sdk/s3-request-presigner"
+import { toSeconds } from "../utils/time";
 
 interface S3Config {
     region: string;
@@ -55,6 +57,15 @@ export class S3CloudProvider implements ICloudProvider {
         })
         await this.client.send(command);
         return command.input.Key as string;
+    }
+
+    public async generatePresingerUrl(file: Partial<Express.Multer.File>, path: string): Promise<string> {
+        const command = new PutObjectCommand({
+            Bucket: this.bucketName,
+            Key: `${path}/${file.originalname}`,
+            ContentType: file.mimetype
+        });
+    return await getSignedUrl(this.client, command, {expiresIn: toSeconds(1, 'minutes')});
     }
 
 }
